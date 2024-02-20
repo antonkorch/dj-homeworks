@@ -25,7 +25,7 @@ SECRET_KEY = 'bsok4=7c%m0toi-5s^3(l(7*(#&-mrxcbvfxmmh#_v82qfiylb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vps.antonk.space']
 
 
 # Application definition
