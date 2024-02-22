@@ -28,3 +28,15 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+
+def find_recipe(request, dish):
+    servings = int(request.GET.get('servings', 1))
+    if dish in DATA:
+        context = {
+            'recipe': {key: value * servings for key, value in DATA[dish].items()}
+        }
+    else:
+        context = {
+            'recipe': {}
+        }
+    return render(request, 'calculator/index.html', context)

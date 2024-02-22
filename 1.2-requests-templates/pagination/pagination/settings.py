@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-44pembdt-_&u&=gy752mo*ij29v=1ln8twlp_=bcr)@m36mibj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['vps.antonk.space']
 
 
 # Application definition
