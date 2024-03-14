@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from advertisements.models import Advertisement, AdvertisementStatusChoices
+from advertisements.models import Advertisement, AdvertisementStatusChoices, Likes
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,6 +24,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         model = Advertisement
         fields = ('id', 'title', 'description', 'creator',
                   'status', 'created_at', )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data['status'] == 'DRAFT' and data['creator']['id'] != self.context['request'].user.id:
+            return None
+        return data
 
     def create(self, validated_data):
         """Метод для создания"""
@@ -50,3 +56,21 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Превышено максимальное количество объявлений")
 
         return data
+
+class LikesSerializer(serializers.ModelSerializer):
+    """Serializer для лайков."""
+
+    class Meta:
+        model = Likes
+        fields = ('id', 'creator', 'advertisement')
+        read_only_fields = ['creator']
+    
+
+    def validate(self, data):
+        creator = self.context['request'].user
+        advertisement = data['advertisement']
+        if Likes.objects.filter(creator=creator, advertisement=advertisement).exists():
+            raise serializers.ValidationError('Лайк уже поставлен')
+        return data
+
+
