@@ -51,8 +51,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             creator=self.context["request"].user,
             status=AdvertisementStatusChoices.OPEN
         ).count()
-        print(open_adv_count)
-        if open_adv_count >= 10:
+        status = data.get('status', None)
+        if open_adv_count >= 10 and status != AdvertisementStatusChoices.CLOSED:
             raise serializers.ValidationError("Превышено максимальное количество объявлений")
 
         return data
@@ -71,6 +71,8 @@ class LikesSerializer(serializers.ModelSerializer):
         advertisement = data['advertisement']
         if Likes.objects.filter(creator=creator, advertisement=advertisement).exists():
             raise serializers.ValidationError('Лайк уже поставлен')
+        if advertisement.creator == creator:
+            raise serializers.ValidationError('Нельзя лайкнуть свое объявление')
         return data
 
 
